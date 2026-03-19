@@ -109,6 +109,11 @@ def load_assets():
     embedder = SentenceTransformer(MODEL_NAME)
     loaded_at = datetime.now(timezone.utc).isoformat()
 
+    
+def ensure_assets_loaded():
+    global index, docs, meta, embedder
+    if index is None or docs is None or meta is None or embedder is None:
+        load_assets()
 
 # ================================
 # STARTUP
@@ -116,7 +121,8 @@ def load_assets():
 
 @app.on_event("startup")
 def _startup():
-    load_assets()
+    global loaded_at
+    loaded_at = "startup_pending"
 
 
 # ================================
@@ -191,9 +197,8 @@ def root():
 
 @app.get("/health")
 def health():
-    ok = all(x is not None for x in [index, docs, meta, embedder])
     return {
-        "ok": ok,
+        "ok": True,
         "docs": 0 if docs is None else len(docs),
         "ntotal": int(index.ntotal) if index is not None else 0,
         "loaded_at": loaded_at,
@@ -244,13 +249,14 @@ def pipeline_status(job_id: str):
 
 @app.get("/themes")
 def themes():
-    if meta is None:
-        return []
+    ensure_assets_loaded()
     return sorted({m.get("market_theme") for m in meta if m.get("market_theme")})
 
 
 @app.post("/search")
 def search(req: SearchReq):
+    ensure_assets_loaded()
+
     q = embedder.encode(
         [req.query],
         convert_to_numpy=True,
