@@ -153,15 +153,15 @@ export default function App() {
         },
       ]);
     } catch (e) {
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          type: "text",
-          content: "Backend not reachable. Is FastAPI running on 127.0.0.1:8000?",
-        },
-      ]);
+  setMessages((prev) => [
+    ...prev,
+    {
+      id: crypto.randomUUID(),
+      role: "assistant",
+      type: "text",
+      content: "Backend not reachable. Please check the deployed API URL or backend status.",
+    },
+    ]);
     } finally {
       setLoading(false);
     }
