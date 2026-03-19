@@ -2,7 +2,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 
 //const API_BASE = "http://127.0.0.1:8000";
 //const API_BASE = import.meta.env.VITE_API_URL;
-const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+//const API_BASE = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+const API_BASE = import.meta.env.VITE_API_URL;
 console.log("API_BASE =", API_BASE);
 
 function cx(...classes) {
@@ -158,7 +159,7 @@ export default function App() {
           id: crypto.randomUUID(),
           role: "assistant",
           type: "text",
-          content: "Backend not reachable. Please check the deployed API URL or backend status.",
+          content: "Backend not reachable. Is FastAPI running on 127.0.0.1:8000?",
         },
       ]);
     } finally {
