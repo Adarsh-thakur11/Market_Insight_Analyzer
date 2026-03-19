@@ -8,8 +8,8 @@ import pandas as pd
 from datetime import datetime, timezone, timedelta
 from pathlib import Path
 import faiss
-import pickle
-from sentence_transformers import SentenceTransformer
+# import pickle
+# from sentence_transformers import SentenceTransformer
 from typing import Optional
 
 import subprocess
@@ -35,6 +35,7 @@ MODEL_NAME = "sentence-transformers/all-MiniLM-L6-v2"
 # ================================
 
 app = FastAPI(title="Market Insight RAG API")
+print("api.py imported successfully")
 
 app.add_middleware(
     CORSMiddleware,
@@ -93,6 +94,9 @@ def is_within_days(created_at, days=7) -> bool:
 def load_assets():
     global index, docs, meta, embedder, loaded_at
 
+    import faiss
+    from sentence_transformers import SentenceTransformer
+
     if not INDEX_PATH.exists():
         raise FileNotFoundError(f"Missing index file: {INDEX_PATH}")
     if not META_PATH.exists():
@@ -109,7 +113,7 @@ def load_assets():
     embedder = SentenceTransformer(MODEL_NAME)
     loaded_at = datetime.now(timezone.utc).isoformat()
 
-    
+
 def ensure_assets_loaded():
     global index, docs, meta, embedder
     if index is None or docs is None or meta is None or embedder is None:
